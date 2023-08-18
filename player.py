@@ -1,13 +1,15 @@
 import pygame
 from main import HEIGHT  # Import HEIGHT from main.py
 
-class Player:
+class Player(pygame.sprite.Sprite):
     def __init__(self, screen_width, screen_height):
-        self.image = pygame.image.load("player_texture.png").convert_alpha()
+        super().__init__()
+
+        self.image = pygame.image.load("textures/player_texture.png").convert_alpha()
         self.image = pygame.transform.scale(self.image, (50, 50))
         self.rect = self.image.get_rect()
-        self.rect.center = (screen_width // 2, screen_height - 100)
-        self.camera_y = 0
+        self.rect.centerx = screen_width // 2
+        self.rect.bottom = screen_height - 100
         self.velocity = 0
         self.jump_power = -15
         self.gravity = 0.8
@@ -22,6 +24,12 @@ class Player:
 
         if self.rect.bottom > HEIGHT:
             self.rect.bottom = HEIGHT
+            self.velocity = 0
 
-    def move_camera(self):
-        self.camera_y = self.rect.y - HEIGHT // 2
+        self.check_collision(platforms)
+
+    def check_collision(self, platforms):
+        hits = pygame.sprite.spritecollide(self, platforms, False)
+        if hits:
+            self.rect.bottom = hits[0].rect.top
+            self.velocity = 0

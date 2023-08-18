@@ -1,29 +1,31 @@
 import pygame
-import sys
-from player import Player
 from platform import Platform
-from cloud import Cloud
+from player import Player
 
+# Define screen dimensions
+WIDTH = 800
+HEIGHT = 600
+CAMERA_HEIGHT = 400
+
+# Initialize pygame
 pygame.init()
 
-WIDTH, HEIGHT = 800, 600
-CAMERA_HEIGHT = HEIGHT // 2
-FPS = 60
-WHITE = (255, 255, 255)
-
+# Set up display
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("Platform Climber")
+pygame.display.set_caption("Platformer Game")
 
-cloud_texture = pygame.image.load("cloud_texture.png").convert_alpha()
+# Load textures
+platform_texture = pygame.image.load("textures/platform_texture.png").convert_alpha()
+cloud_texture = pygame.image.load("textures/cloud_texture.png").convert_alpha()
 
-player = Player(WIDTH, HEIGHT, spawn_y=HEIGHT - 100)  # Pass HEIGHT value to Player constructor
+# Generate initial platforms and clouds
+player = Player(WIDTH, HEIGHT)  # Create player
 platforms = Platform.generate_initial_platforms(WIDTH, HEIGHT, CAMERA_HEIGHT, player.rect.y)
-clouds = Cloud.generate_clouds(WIDTH, HEIGHT, cloud_texture, player.camera_y)
+clouds = []  # Create an empty list for clouds
 
-clock = pygame.time.Clock()
+# Game loop
 running = True
-
-generate_new_platform = True  # Flag to control platform generation
+clock = pygame.time.Clock()
 
 while running:
     for event in pygame.event.get():
@@ -32,34 +34,27 @@ while running:
 
     keys = pygame.key.get_pressed()
 
+    # Update player and platforms
     player.update(keys, platforms)
-    player.move_camera()
+    if player.rect.top <= CAMERA_HEIGHT:
+        platforms = Platform.generate_platforms(WIDTH, CAMERA_HEIGHT, player.rect.y)
 
-    if generate_new_platform and player.camera_y <= 0:
-        new_platform = Platform.generate_platform(WIDTH, HEIGHT, CAMERA_HEIGHT, player.rect.y, platforms[-1].rect.y)
-        platforms.append(new_platform)
-        generate_new_platform = False
+    # Clear the screen
+    screen.fill((135, 206, 235))
 
-    screen.fill(WHITE)
-
+    # Draw clouds
     for cloud in clouds:
-        screen.blit(cloud.cloud_texture, (cloud.rect.x, cloud.rect.y - player.camera_y))
-        if cloud.is_moving:
-            cloud.rect.x += cloud.speed * cloud.direction
-            if cloud.rect.left <= 0 or cloud.rect.right >= WIDTH:
-                cloud.direction *= -1
+        cloud.update()
+        cloud.draw(screen)
 
+    # Draw platforms
     for platform in platforms:
-        screen.blit(platform.texture, (platform.rect.x, platform.rect.y - player.camera_y))
-        if platform.is_moving:
-            platform.rect.x += platform.speed * platform.direction
-            if platform.rect.left <= 0 or platform.rect.right >= WIDTH:
-                platform.direction *= -1
+        platform.draw(screen)
 
-    screen.blit(player.image, (player.rect.x, player.rect.y - player.camera_y))
+    # Draw player
+    player.draw(screen)
 
     pygame.display.flip()
-    clock.tick(FPS)
+    clock.tick(30)
 
 pygame.quit()
-sys.exit()
