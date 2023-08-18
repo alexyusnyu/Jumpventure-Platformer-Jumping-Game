@@ -24,6 +24,8 @@ clouds = Cloud.generate_clouds(WIDTH, HEIGHT, cloud_texture, player.camera_y)
 clock = pygame.time.Clock()
 running = True
 
+generate_new_platform = True  # Flag to control platform generation
+
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -34,9 +36,10 @@ while running:
     player.update(keys, platforms)
     player.move_camera()
 
-    if player.camera_y <= 0:
+    if generate_new_platform and player.camera_y <= 0:
         new_platform = Platform.generate_platform(WIDTH, HEIGHT, CAMERA_HEIGHT, player.rect.y, platforms[-1].rect.y)
         platforms.append(new_platform)
+        generate_new_platform = False
 
     screen.fill(WHITE)
 
@@ -49,6 +52,10 @@ while running:
 
     for platform in platforms:
         screen.blit(platform.texture, (platform.rect.x, platform.rect.y - player.camera_y))
+        if platform.is_moving:
+            platform.rect.x += platform.speed * platform.direction
+            if platform.rect.left <= 0 or platform.rect.right >= WIDTH:
+                platform.direction *= -1
 
     screen.blit(player.image, (player.rect.x, player.rect.y - player.camera_y))
 
