@@ -1,6 +1,7 @@
 import pygame
 import random
 
+
 class Enemy(pygame.sprite.Sprite):
 	def __init__(self, SCREEN_WIDTH, y, sprite_sheet, scale):
 		pygame.sprite.Sprite.__init__(self)
@@ -21,7 +22,7 @@ class Enemy(pygame.sprite.Sprite):
 			image = pygame.transform.flip(image, self.flip, False)
 			image.set_colorkey((0, 0, 0))
 			self.animation_list.append(image)
-		
+
 		#select starting image and create rectangle from it
 		self.image = self.animation_list[self.frame_index]
 		self.rect = self.image.get_rect()
@@ -52,3 +53,4 @@ class Enemy(pygame.sprite.Sprite):
 		#check if gone off screen
 		if self.rect.right < 0 or self.rect.left > SCREEN_WIDTH:
 			self.kill()
+
