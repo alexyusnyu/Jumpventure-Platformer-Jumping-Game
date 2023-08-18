@@ -1,6 +1,5 @@
 import pygame
 import sys
-import random
 from player import Player
 from platform import Platform
 from cloud import Cloud
@@ -17,7 +16,7 @@ pygame.display.set_caption("Platform Climber")
 
 cloud_texture = pygame.image.load("cloud_texture.png").convert_alpha()
 
-player = Player(WIDTH, HEIGHT)
+player = Player(WIDTH, HEIGHT, spawn_y=HEIGHT - 100)  # Pass HEIGHT value to Player constructor
 platforms = Platform.generate_initial_platforms(WIDTH, HEIGHT, CAMERA_HEIGHT, player.rect.y)
 clouds = Cloud.generate_clouds(WIDTH, HEIGHT, cloud_texture, player.camera_y)
 
