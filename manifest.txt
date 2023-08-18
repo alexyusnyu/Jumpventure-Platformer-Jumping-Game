@@ -1,3 +1,0 @@
-Main-Class: pacman.PacmanGame
-Class-Path:
-Created-By: sh4dowpunk
