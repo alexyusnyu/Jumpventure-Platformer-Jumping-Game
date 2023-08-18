@@ -1,30 +1,33 @@
 import pygame
 import random
 
-
 class Platform:
-    def __init__(self, x, y, is_moving=False):
-        self.rect = pygame.Rect(x, y, 100, 10)  # Adjust size as needed
-        self.is_moving = is_moving
-        self.direction = 1  # 1 for right, -1 for left
-        self.speed = 2  # Adjust platform movement speed
+    def __init__(self, x, y, width):
+        self.rect = pygame.Rect(x, y, width, 20)  # Adjust platform height
+        self.texture = pygame.image.load("platform_texture.png").convert_alpha()
+        self.texture = pygame.transform.scale(self.texture, (width, 20))  # Adjust platform size
 
     @staticmethod
-    def generate_platforms(screen_width, screen_height, camera_height, player_y):
+    def generate_initial_platforms(screen_width, screen_height, camera_height, player_y):
         platforms = []
-        platform_y = screen_height - 10  # Adjust initial platform position
-        is_moving = False
-        while platform_y > camera_height:
-            x = random.randint(0, screen_width - 100)  # Adjust width of the platform
-            platforms.append(Platform(x, platform_y, is_moving))
-            platform_y -= random.randint(70, 120)  # Adjust gap between platforms
-            is_moving = not is_moving  # Toggle moving state
+        x = random.randint(0, screen_width - 100)
+        width = random.randint(150, 300)  # Adjust platform width range
+        platforms.append(Platform(x, player_y, width))
+        return platforms
 
-        # Generate additional platforms as camera moves higher
-        while platform_y > player_y - 300:  # Adjust the threshold for generating additional platforms
-            x = random.randint(0, screen_width - 100)
-            platforms.append(Platform(x, platform_y, is_moving))
-            platform_y -= random.randint(70, 120)
-            is_moving = not is_moving
+    @staticmethod
+    def generate_platform(screen_width, screen_height, camera_height, player_y, last_platform_y):
+        x = random.randint(0, screen_width - 150)  # Fix platform width
+        width = random.randint(150, 300)  # Adjust platform width range
+        y = last_platform_y - random.randint(150, 250)  # Adjust vertical distance
+        return Platform(x, y, width)
 
+    @staticmethod
+    def generate_more_realistic_platforms(screen_width, screen_height, camera_height, player_y):
+        platforms = []
+        last_platform_y = player_y
+        while last_platform_y > player_y - screen_height:
+            platform = Platform.generate_platform(screen_width, screen_height, camera_height, player_y, last_platform_y)
+            platforms.append(platform)
+            last_platform_y = platform.rect.y
         return platforms

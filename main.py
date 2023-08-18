@@ -1,5 +1,6 @@
 import pygame
 import sys
+import random
 from player import Player
 from platform import Platform
 from cloud import Cloud
@@ -12,14 +13,12 @@ FPS = 60
 WHITE = (255, 255, 255)
 
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("Jumping Platformer")
+pygame.display.set_caption("Platform Climber")
 
-# Load cloud texture
 cloud_texture = pygame.image.load("cloud_texture.png").convert_alpha()
 
-# Create instances
 player = Player(WIDTH, HEIGHT)
-platforms = Platform.generate_platforms(WIDTH, HEIGHT, CAMERA_HEIGHT, player.rect.y)
+platforms = Platform.generate_initial_platforms(WIDTH, HEIGHT, CAMERA_HEIGHT, player.rect.y)
 clouds = Cloud.generate_clouds(WIDTH, HEIGHT, cloud_texture, player.camera_y)
 
 clock = pygame.time.Clock()
@@ -32,33 +31,25 @@ while running:
 
     keys = pygame.key.get_pressed()
 
-    # Update player
     player.update(keys, platforms)
+    player.move_camera()
 
-    # Clear the screen
+    if player.camera_y <= 0:
+        new_platform = Platform.generate_platform(WIDTH, HEIGHT, CAMERA_HEIGHT, player.rect.y, platforms[-1].rect.y)
+        platforms.append(new_platform)
+
     screen.fill(WHITE)
 
-    # Draw clouds and update cloud movement
     for cloud in clouds:
         screen.blit(cloud.cloud_texture, (cloud.rect.x, cloud.rect.y - player.camera_y))
-
-        # Update cloud movement
         if cloud.is_moving:
             cloud.rect.x += cloud.speed * cloud.direction
             if cloud.rect.left <= 0 or cloud.rect.right >= WIDTH:
                 cloud.direction *= -1
 
-    # Draw platforms and update moving platforms
     for platform in platforms:
-        pygame.draw.rect(screen, (0, 0, 255), (platform.rect.x, platform.rect.y - player.camera_y, 100, 10))  # Adjust platform size
+        screen.blit(platform.texture, (platform.rect.x, platform.rect.y - player.camera_y))
 
-        # Update platform movement
-        if platform.is_moving:
-            platform.rect.x += platform.speed * platform.direction
-            if platform.rect.left <= 0 or platform.rect.right >= WIDTH:
-                platform.direction *= -1
-
-    # Draw player
     screen.blit(player.image, (player.rect.x, player.rect.y - player.camera_y))
 
     pygame.display.flip()
