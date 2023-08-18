@@ -18,9 +18,9 @@ pygame.display.set_caption("Jumping Platformer")
 cloud_texture = pygame.image.load("cloud_texture.png").convert_alpha()
 
 # Create instances
-player = Player()
-platforms = Platform.generate_platforms(HEIGHT, CAMERA_HEIGHT)
-clouds = Cloud.generate_clouds(HEIGHT, CAMERA_HEIGHT)
+player = Player(HEIGHT)
+platforms = Platform.generate_platforms(WIDTH, HEIGHT, CAMERA_HEIGHT)
+clouds = Cloud.generate_clouds(WIDTH, HEIGHT, cloud_texture)  # Pass cloud_texture
 
 clock = pygame.time.Clock()
 running = True
@@ -35,16 +35,12 @@ while running:
     # Update player
     player.update(keys, platforms)
 
-    # Apply gravity to player
-    player.apply_gravity()
-
     # Clear the screen
     screen.fill(WHITE)
 
     # Draw clouds
     for cloud in clouds:
-        cloud_texture_resized = pygame.transform.scale(cloud.cloud_texture, (80, 50))
-        screen.blit(cloud_texture_resized, (cloud.rect.x, cloud.rect.y - player.camera_y))
+        screen.blit(cloud.cloud_texture, (cloud.rect.x, cloud.rect.y - player.camera_y))
 
     # Draw platforms
     for platform in platforms:
