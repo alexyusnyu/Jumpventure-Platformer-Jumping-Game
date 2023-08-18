@@ -1,4 +1,5 @@
 import pygame
+import random
 import os
 from pygame import mixer
 from player import Player
@@ -75,32 +76,38 @@ platform = Platform(SCREEN_WIDTH // 2 - 50, SCREEN_HEIGHT - 50, 100, False, plat
 platform_group.add(platform)
 
 # Main game loop
-run = True
-while run:
-    clock.tick(FPS)
+def main():
+    global scroll, bg_scroll, game_over, score, fade_counter, high_score
 
-    if game_over == False:
-        scroll = jumpy.move()
+    run = True
+    while run:
+        clock.tick(FPS)
 
-        bg_scroll += scroll
-        if bg_scroll >= 600:
-            bg_scroll = 0
+        if game_over == False:
+            scroll = jumpy.move()
 
-        # ... (rest of your game logic)
+            bg_scroll += scroll
+            if bg_scroll >= 600:
+                bg_scroll = 0
 
-        pygame.display.update()
+            # ... (rest of your game logic)
 
-    else:
-        if fade_counter < SCREEN_WIDTH:
-            # ... (fade-out effect)
-            pass
+            pygame.display.update()
+
         else:
-            # ... (game over screen)
-            pass
+            if fade_counter < SCREEN_WIDTH:
+                # ... (fade-out effect)
+                pass
+            else:
+                # ... (game over screen)
+                pass
 
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            # ... (update high score and exit)
-            pass
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                # ... (update high score and exit)
+                pass
 
-pygame.quit()
+    pygame.quit()
+
+if __name__ == "__main__":
+    main()
