@@ -1,69 +1,62 @@
+# main.py
+
 import pygame
-import sys
+import os
 from player import Player
 from platform import Platform
-from cloud import Cloud
+from enemy import Enemy
+from spritesheet import SpriteSheet
 
+# Initialize pygame
 pygame.init()
 
-# Screen settings
-WIDTH = 800
-HEIGHT = 600
-screen = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("Platformer Game")
+# Game window dimensions
+SCREEN_WIDTH = 400
+SCREEN_HEIGHT = 600
 
-# Colors
-WHITE = (255, 255, 255)
+# Create game window
+screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+pygame.display.set_caption('Jumpy')
 
-# Player
-player = Player(WIDTH // 2, HEIGHT // 2)  # Adjust player spawn position
-
-# Platforms
-platforms = Platform.generate_initial_platforms(WIDTH, HEIGHT, player.rect.y)
-
-# Clouds
-clouds = Cloud.generate_initial_clouds(WIDTH, HEIGHT)
-
-# Game loop
+# Set frame rate
 clock = pygame.time.Clock()
+FPS = 60
 
-while True:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            pygame.quit()
-            sys.exit()
+# Load music and sounds
+mixer.init()
+pygame.mixer.music.load('assets/music.mp3')
+pygame.mixer.music.set_volume(0.6)
+pygame.mixer.music.play(-1, 0.0)
+jump_fx = pygame.mixer.Sound('assets/jump.mp3')
+jump_fx.set_volume(0.5)
+death_fx = pygame.mixer.Sound('assets/death.mp3')
+death_fx.set_volume(0.5)
 
-    keys = pygame.key.get_pressed()
-    player.update(keys, platforms)
+# ... (rest of the code, including variables, fonts, images)
 
-    # Update clouds
-    for cloud in clouds:
-        cloud.update()
+def main():
+    # ... (create player instance, sprite groups, and starting platform)
 
-    # Update camera position
-    if player.rect.top <= HEIGHT // 4:
-        player.pos.y += abs(player.velocity.y)
-        for platform in platforms:
-            platform.rect.y += abs(player.velocity.y)
-        for cloud in clouds:
-            cloud.rect.y += abs(player.velocity.y)
+    # Main game loop
+    run = True
+    while run:
+        clock.tick(FPS)
 
-    # Generate new platforms and clouds as player goes up
-    while len(platforms) < 6:  # Adjust the number of platforms to generate
-        new_platform = Platform.generate_platform(WIDTH, HEIGHT, player.rect.y)
-        platforms.append(new_platform)
+        # ... (game loop code)
 
-    while len(clouds) < 5:  # Adjust the number of clouds to generate
-        new_cloud = Cloud.generate_cloud(WIDTH, HEIGHT)
-        clouds.append(new_cloud)
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                # Update high score
+                if score > high_score:
+                    high_score = score
+                    with open('score.txt', 'w') as file:
+                        file.write(str(high_score))
+                run = False
 
-    # Draw everything
-    screen.fill(WHITE)
-    for platform in platforms:
-        platform.draw(screen)
-    for cloud in clouds:
-        cloud.draw(screen)
-    player.draw(screen)
+        # Update display window
+        pygame.display.update()
 
-    pygame.display.flip()
-    clock.tick(60)
+    pygame.quit()
+
+if __name__ == "__main__":
+    main()
