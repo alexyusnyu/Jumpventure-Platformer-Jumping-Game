@@ -1,35 +1,33 @@
 import pygame
-from main import HEIGHT  # Import HEIGHT from main.py
 
 class Player(pygame.sprite.Sprite):
-    def __init__(self, screen_width, screen_height):
+    def __init__(self, x, y):
         super().__init__()
-
-        self.image = pygame.image.load("textures/player_texture.png").convert_alpha()
-        self.image = pygame.transform.scale(self.image, (50, 50))
-        self.rect = self.image.get_rect()
-        self.rect.centerx = screen_width // 2
-        self.rect.bottom = screen_height - 100
-        self.velocity = 0
-        self.jump_power = -15
+        self.image = pygame.Surface((40, 60))  # Adjust player size
+        self.image.fill((0, 0, 255))  # Adjust player color
+        self.rect = self.image.get_rect(center=(x, y))
+        self.pos = pygame.math.Vector2(x, y)
+        self.velocity = pygame.math.Vector2(0, 0)
         self.gravity = 0.8
-
-    def jump(self):
-        if self.rect.bottom == HEIGHT:
-            self.velocity = self.jump_power
+        self.jump_power = -15
+        self.on_ground = False
 
     def update(self, keys, platforms):
-        self.velocity += self.gravity
-        self.rect.y += self.velocity
+        self.velocity.y += self.gravity
+        self.pos += self.velocity
 
-        if self.rect.bottom > HEIGHT:
-            self.rect.bottom = HEIGHT
-            self.velocity = 0
+        self.rect.midbottom = self.pos
 
-        self.check_collision(platforms)
+        self.on_ground = False
+        for platform in platforms:
+            if self.rect.colliderect(platform.rect) and self.velocity.y >= 0:
+                self.on_ground = True
+                self.pos.y = platform.rect.top + 1
+                self.velocity.y = 0
 
-    def check_collision(self, platforms):
-        hits = pygame.sprite.spritecollide(self, platforms, False)
-        if hits:
-            self.rect.bottom = hits[0].rect.top
-            self.velocity = 0
+        if self.on_ground:
+            if keys[pygame.K_SPACE]:
+                self.velocity.y = self.jump_power
+
+    def draw(self, screen):
+        screen.blit(self.image, self.rect)

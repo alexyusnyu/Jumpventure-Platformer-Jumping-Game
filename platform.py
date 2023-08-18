@@ -4,34 +4,23 @@ import random
 class Platform(pygame.sprite.Sprite):
     def __init__(self, x, y, width):
         super().__init__()
+        self.image = pygame.Surface((width, 20))  # Adjust platform size
+        self.image.fill((0, 255, 0))  # Adjust platform color
+        self.rect = self.image.get_rect(topleft=(x, y))
 
-        self.width = width
-
-        # Load platform texture
-        self.texture = pygame.image.load("textures/platform_texture.png").convert_alpha()
-        self.texture = pygame.transform.scale(self.texture, (self.width, 20))
-
-        self.image = self.texture
-        self.rect = self.image.get_rect()
-        self.rect.x = x
-        self.rect.y = y
-
+class PlatformGenerator:
     @staticmethod
-    def generate_initial_platforms(screen_width, screen_height, camera_height, player_y):
-        platforms = pygame.sprite.Group()
-
-        num_platforms = 4
-        distance = 150
-
-        for _ in range(num_platforms):
-            x = random.randint(0, screen_width - 100)
-            y = player_y + distance
-            width = random.randint(50, 150)
-            platform = Platform(x, y, width)
-            platforms.add(platform)
-            distance += 150
-
+    def generate_initial_platforms(screen_width, screen_height, player_y):
+        platforms = []
+        x = screen_width // 2 - 50  # Center the initial platform
+        y = player_y + 150  # Adjust initial platform y position
+        width = 100  # Adjust initial platform width
+        platforms.append(Platform(x, y, width))
         return platforms
 
-    def update(self):
-        pass
+    @staticmethod
+    def generate_platform(screen_width, screen_height, camera_height, player_y):
+        x = random.randint(0, screen_width - 100)
+        y = camera_height + player_y - random.randint(100, 200)  # Adjust platform y position range
+        width = random.randint(50, 150)  # Adjust platform width range
+        return Platform(x, y, width)

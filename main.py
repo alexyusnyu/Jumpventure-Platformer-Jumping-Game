@@ -1,60 +1,69 @@
 import pygame
-from platform import Platform
+import sys
 from player import Player
+from platform import Platform
+from cloud import Cloud
 
-# Define screen dimensions
-WIDTH = 800
-HEIGHT = 600
-CAMERA_HEIGHT = 400
-
-# Initialize pygame
 pygame.init()
 
-# Set up display
+# Screen settings
+WIDTH = 800
+HEIGHT = 600
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Platformer Game")
 
-# Load textures
-platform_texture = pygame.image.load("textures/platform_texture.png").convert_alpha()
-cloud_texture = pygame.image.load("textures/cloud_texture.png").convert_alpha()
+# Colors
+WHITE = (255, 255, 255)
 
-# Generate initial platforms and clouds
-player = Player(WIDTH, HEIGHT)  # Create player
-platforms = Platform.generate_initial_platforms(WIDTH, HEIGHT, CAMERA_HEIGHT, player.rect.y)
-clouds = []  # Create an empty list for clouds
+# Player
+player = Player(WIDTH // 2, HEIGHT // 2)  # Adjust player spawn position
+
+# Platforms
+platforms = Platform.generate_initial_platforms(WIDTH, HEIGHT, player.rect.y)
+
+# Clouds
+clouds = Cloud.generate_initial_clouds(WIDTH, HEIGHT)
 
 # Game loop
-running = True
 clock = pygame.time.Clock()
 
-while running:
+while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            running = False
+            pygame.quit()
+            sys.exit()
 
     keys = pygame.key.get_pressed()
-
-    # Update player and platforms
     player.update(keys, platforms)
-    if player.rect.top <= CAMERA_HEIGHT:
-        platforms = Platform.generate_platforms(WIDTH, CAMERA_HEIGHT, player.rect.y)
 
-    # Clear the screen
-    screen.fill((135, 206, 235))
-
-    # Draw clouds
+    # Update clouds
     for cloud in clouds:
         cloud.update()
-        cloud.draw(screen)
 
-    # Draw platforms
+    # Update camera position
+    if player.rect.top <= HEIGHT // 4:
+        player.pos.y += abs(player.velocity.y)
+        for platform in platforms:
+            platform.rect.y += abs(player.velocity.y)
+        for cloud in clouds:
+            cloud.rect.y += abs(player.velocity.y)
+
+    # Generate new platforms and clouds as player goes up
+    while len(platforms) < 6:  # Adjust the number of platforms to generate
+        new_platform = Platform.generate_platform(WIDTH, HEIGHT, player.rect.y)
+        platforms.append(new_platform)
+
+    while len(clouds) < 5:  # Adjust the number of clouds to generate
+        new_cloud = Cloud.generate_cloud(WIDTH, HEIGHT)
+        clouds.append(new_cloud)
+
+    # Draw everything
+    screen.fill(WHITE)
     for platform in platforms:
         platform.draw(screen)
-
-    # Draw player
+    for cloud in clouds:
+        cloud.draw(screen)
     player.draw(screen)
 
     pygame.display.flip()
-    clock.tick(30)
-
-pygame.quit()
+    clock.tick(60)
