@@ -2,9 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="4114fc36-bcff-4a58-83e0-83594c939fdb" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/platform.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/platform.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/player.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/player.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/top_score.txt" beforeDir="false" afterPath="$PROJECT_DIR$/top_score.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
