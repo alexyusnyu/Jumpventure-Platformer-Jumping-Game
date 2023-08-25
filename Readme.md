@@ -2,6 +2,8 @@
 
 Welcome to Jumpventure, a captivating platformer jumping game crafted with Python and Pygame that will test your jumping prowess and challenge your reflexes!
 
+## Preview
+
 ![Gameplay Preview](preview.gif)
 
 ## Gameplay
@@ -15,3 +17,13 @@ Jumpventure is all about mastering the art of jumping. Navigate through various 
 2. **Launch:** Run the `Game.exe`
 3. **Jump In:** Use arrow keys for movement.
 
+## License:
+
+This project is licensed under the [MIT License](LICENSE).
+
+
+---
+Feel free to contribute to this project. If you encounter any issues or have suggestions, please create an issue or a pull request.
+
+## Author
+sh4dowpunk
