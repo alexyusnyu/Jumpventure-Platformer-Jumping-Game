@@ -1,28 +1,17 @@
-# AdventureTime - Platformer Jumping Game
+# Jumpventure: Platformer Jumping Game
 
-AdventureTime is a simple platformer jumping game built with Python and Pygame.
+Welcome to Jumpventure, an exciting platformer jumping game created using Python and Pygame.
+
+![Gameplay Preview](preview.gif)
 
 ## Gameplay
 
-- Use `LEFT` and `RIGHT` arrow keys to move.
-- Press `SPACE` to jump between platforms.
-- Climb higher, avoid enemies.
-- Game over if you fall or collide with an enemy.
+Jumpventure is all about mastering the art of jumping. Navigate through various platforms, and avoid opponents as you strive to achieve the highest score. Use your skills to jump between platforms and stay alive!
 
-## Technologies
 
-- **Python**
-- **Pygame**
-- **Spritesheet**
-- **Sound Effects**
-- **File Handling**
+## How to Play
 
-## How to Run
+1. **Download:** Download the game files from the repository.
+2. **Launch:** Run the `Game.exe`
+3. **Jump In:** Use arrow keys for movement.
 
-1. Install Python and Pygame.
-2. Clone repo or download code.
-3. Navigate to game directory in terminal.
-4. Run:
-
-```bash
-python your_game_file.py
